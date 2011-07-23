@@ -1,9 +1,8 @@
 import java.io.File;
 import java.net.URL;
 
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.*;
-import org.eclipse.jetty.webapp.WebAppContext;
+
+import org.apache.catalina.startup.Tomcat;
 
 /**
  * 
@@ -17,7 +16,7 @@ public class Main {
     
     /**
      * @param args
-     */
+     
     public static void main(String[] args) throws Exception{
         String webappDirLocation = "src/main/webapp/";
         
@@ -25,7 +24,7 @@ public class Main {
         //Look for that variable and default to 8080 if it isn't there.
         String webPort = System.getenv("PORT");
         if(webPort == null || webPort.isEmpty()) {
-            webPort = "8080";
+            webPort = "9090";
         }
 
         Server server = new Server(Integer.valueOf(webPort));
@@ -47,5 +46,25 @@ public class Main {
         server.start();
         server.join();   
     }
+*/
+	public static void main(String[] args) throws Exception{
 
+		String webappDirLocation = "src/main/webapp/";
+		Tomcat tomcat = new Tomcat();
+
+		//The port that we should run on can be set into an environment variable
+		//Look for that variable and default to 8080 if it isn't there.
+		String webPort = System.getenv("PORT");
+		if(webPort == null || webPort.isEmpty()) {
+			webPort = "8080";
+		}
+
+		tomcat.setPort(Integer.valueOf(webPort));
+
+		tomcat.addWebapp("/", new File(webappDirLocation).getAbsolutePath());
+		System.out.println("configuring app with basedir: " + new File("./" + webappDirLocation).getAbsolutePath());
+
+		tomcat.start();
+		tomcat.getServer().await();  
+	}
 }
